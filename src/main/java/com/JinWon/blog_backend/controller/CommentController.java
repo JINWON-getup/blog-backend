@@ -21,13 +21,8 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<?> createComment(@RequestBody Comment comment) {
         try {
-            System.out.println("CommentController.createComment() 호출됨");
-            System.out.println("CommentService 주입 상태: " + (commentService != null ? "성공" : "실패"));
-            
             if (commentService != null) {
-                System.out.println("CommentService.createComment() 호출 시작");
                 Comment result = commentService.createComment(comment);
-                System.out.println("CommentService.createComment() 호출 완료");
                 return ResponseEntity.ok(result);
             } else {
                 return ResponseEntity.badRequest().body("CommentService 주입 실패");
