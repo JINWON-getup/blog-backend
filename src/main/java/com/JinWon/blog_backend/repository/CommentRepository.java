@@ -10,13 +10,13 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    
+
     // 게시글별 댓글 조회
     List<Comment> findByPostIdOrderByCreatedAtDesc(Long postId);
-    
-    // 작성자별 댓글 조회
-    List<Comment> findByAuthorOrderByCreatedAtDesc(Long author);
-    
+
+    // 사용자별 댓글 조회 (userId 기준)
+    List<Comment> findByUserIdOrderByCreatedAtDesc(Long userId);
+
     // 게시글별 댓글 수 조회
     @Query("SELECT COUNT(c) FROM Comment c WHERE c.postId = :postId")
     Long countByPostId(@Param("postId") Long postId);

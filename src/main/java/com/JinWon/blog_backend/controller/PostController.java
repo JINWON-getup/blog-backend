@@ -17,26 +17,27 @@ public class PostController {
 
     @Autowired
     private PostService postService;
-    
+
     @Autowired
     private PostRepository postRepository;  // fallback용
 
     // 게시글 생성
     @PostMapping
     public Post createPost(@RequestBody Post post) {
-        System.out.println("PostController.createPost() 호출됨");
-        System.out.println("PostService 주입 상태: " + (postService != null ? "성공" : "실패"));
-        
         if (postService != null) {
-            System.out.println("PostService.createPost() 호출 시작");
             Post result = postService.createPost(post);
-            System.out.println("PostService.createPost() 호출 완료");
             return result;
         } else {
-            System.out.println("PostService가 null입니다! Repository 직접 사용");
             // 임시로 Repository 직접 사용
-            return postRepository.save(post);
+            Post savedPost = postRepository.save(post);
+            return savedPost;
         }
+    }
+
+    // 테스트용 간단한 엔드포인트
+    @GetMapping("/test")
+    public ResponseEntity<String> testEndpoint() {
+        return ResponseEntity.ok("PostController 테스트 성공! API 연결됨");
     }
 
     // 게시글 목록 조회 (보드별 필터링 가능)
@@ -65,7 +66,7 @@ public class PostController {
             Post existingPost = post.get();
             existingPost.setTitle(postDetails.getTitle());
             existingPost.setContent(postDetails.getContent());
-            existingPost.setAuthor(postDetails.getAuthor());
+            existingPost.setId(postDetails.getId());
             existingPost.setCategory(postDetails.getCategory());
             existingPost.setTags(postDetails.getTags());
             existingPost.setBoardType(postDetails.getBoardType());

@@ -6,11 +6,15 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "post")
 @Data
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private Long userId;
 
     @Column(nullable = false)
     private String title;
@@ -19,12 +23,9 @@ public class Post {
     private String content;
 
     @Column(nullable = false)
-    private Long author;  // User.pid를 참조하는 Long 타입으로 변경
-
-    @Column(nullable = false)
     private String category;
 
-    @Column(length = 80)
+    @Column(length = 50)
     private String tags;
 
     @Column(nullable = false)
@@ -32,11 +33,6 @@ public class Post {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    // User와의 관계 설정
-    @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @JoinColumn(name = "author", insertable = false, updatable = false)
-    private User user;
 
     @PrePersist
     protected void onCreate() {

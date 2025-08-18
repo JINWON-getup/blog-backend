@@ -24,6 +24,8 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
     
+    // 임시로 UserDetailsService 비활성화
+    /*
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -40,6 +42,7 @@ public class SecurityConfig {
             }
         };
     }
+    */
     
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -47,21 +50,7 @@ public class SecurityConfig {
             .cors(cors -> cors.and())
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/admin/login").permitAll()      // 로그인 API 허용
-                .requestMatchers("/api/admin/logout").permitAll()     // 로그아웃 API 허용
-                .requestMatchers("/api/admin/*/password").permitAll() // 비밀번호 변경 API 허용
-                .requestMatchers("/api/admin/*/reset-password").permitAll() // 비밀번호 초기화 API 허용
-                .requestMatchers("/api/admin/*").permitAll()          // 관리자 정보 조회/수정 API 허용
-                .requestMatchers("/api/users/register").permitAll()   // 사용자 등록 API 허용
-                .requestMatchers("/api/users/login").permitAll()      // 사용자 로그인 API 허용
-                .requestMatchers("/api/users/logout").permitAll()     // 사용자 로그아웃 API 허용
-                .requestMatchers("/api/users/**").permitAll()         // 기타 사용자 API 허용
-                .requestMatchers("/api/comments/**").permitAll()      // 댓글 API 허용
-                .requestMatchers("/api/likes/**").permitAll()         // 좋아요 API 허용
-                .requestMatchers("/api/test/**").permitAll()          // 테스트 API 허용
-                .requestMatchers("/api/post").permitAll()             // 게시글 목록 조회 허용
-                .requestMatchers("/api/post/*").permitAll()           // 게시글 상세 조회 허용
-                .anyRequest().authenticated()                         // 나머지는 인증 필요
+                .anyRequest().permitAll()  // 모든 요청 허용
             )
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable());

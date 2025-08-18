@@ -23,17 +23,17 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         try {
+            
             User registeredUser = userService.registerUser(user);
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "회원가입이 성공했습니다.");
             response.put("user", Map.of(
-                    "pid", registeredUser.getPid(),
+                    "pid", registeredUser.getId(),
                     "userId", registeredUser.getUserId(),
-                    "email", registeredUser.getEmail(),
-                    "phoneNumber", registeredUser.getPhoneNumber(),
-                    "address", registeredUser.getAddress()
+                    "email", registeredUser.getUserEmail(),
+                    "phoneNumber", registeredUser.getPhoneNumber()
             ));
 
             return ResponseEntity.ok(response);
@@ -64,18 +64,11 @@ public class UserController {
 
             // Map.of() 대신 HashMap 사용
             Map<String, Object> userInfo = new HashMap<>();
-            userInfo.put("pid", user.getPid());
+            userInfo.put("pid", user.getId());
             userInfo.put("userId", user.getUserId());
-            userInfo.put("email", user.getEmail());
+            userInfo.put("email", user.getUserEmail());
             userInfo.put("phoneNumber", user.getPhoneNumber());
-            userInfo.put("address", user.getAddress());
-            userInfo.put("point", user.getPoint());
-            userInfo.put("level", user.getLevel());
-            userInfo.put("experience", user.getExperience());
-            userInfo.put("totalPost", user.getTotalPost());
-            userInfo.put("totalComment", user.getTotalComment());
-            userInfo.put("totalLike", user.getTotalLike());
-            userInfo.put("consecutiveLogin", user.getConsecutiveLogin());
+            userInfo.put("nickName", user.getNickName());
 
             response.put("user", userInfo);
 
@@ -126,19 +119,11 @@ public class UserController {
 
                 // Map.of() 대신 HashMap 사용
                 Map<String, Object> userInfo = new HashMap<>();
-                userInfo.put("pid", user.getPid());
+                userInfo.put("pid", user.getId());
                 userInfo.put("userId", user.getUserId());
-                userInfo.put("email", user.getEmail());
+                userInfo.put("email", user.getUserEmail());
                 userInfo.put("phoneNumber", user.getPhoneNumber());
-                userInfo.put("address", user.getAddress());
-                userInfo.put("point", user.getPoint());
-                userInfo.put("level", user.getLevel());
-                userInfo.put("experience", user.getExperience());
-                userInfo.put("totalPost", user.getTotalPost());
-                userInfo.put("totalComment", user.getTotalComment());
-                userInfo.put("totalLike", user.getTotalLike());
-                userInfo.put("consecutiveLogin", user.getConsecutiveLogin());
-                userInfo.put("isActive", user.getIsActive());
+                userInfo.put("nickName", user.getNickName());
 
                 response.put("user", userInfo);
                 return ResponseEntity.ok(response);
@@ -163,11 +148,10 @@ public class UserController {
             response.put("success", true);
             response.put("message", "사용자 정보가 수정되었습니다.");
             response.put("user", Map.of(
-                    "pid", updatedUser.getPid(),
+                    "pid", updatedUser.getId(),
                     "userId", updatedUser.getUserId(),
-                    "email", updatedUser.getEmail(),
-                    "phoneNumber", updatedUser.getPhoneNumber(),
-                    "address", updatedUser.getAddress()
+                    "email", updatedUser.getUserEmail(),
+                    "phoneNumber", updatedUser.getPhoneNumber()
             ));
 
             return ResponseEntity.ok(response);

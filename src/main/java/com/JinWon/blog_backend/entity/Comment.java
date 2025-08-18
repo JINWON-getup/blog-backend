@@ -6,8 +6,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
 @Table(name = "comment")
+@Data
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,21 +17,24 @@ public class Comment {
     private String content;
 
     @Column(nullable = false)
-    private Long author;  // User.pid를 참조하는 Long 타입으로 변경
+    private Long postId;
 
     @Column(nullable = false)
-    private Long postId;    // 게시글 ID
+    private Long userId;
+
+    // 대댓글은 한 단계만 (원댓글 ID)
+    @Column
+    private Long parentCommentId;
+
+    // 대댓글 여부를 명확하게 표시
+    @Column(nullable = false)
+    private Boolean isReply = false;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    // User와의 관계 설정
-    @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @JoinColumn(name = "author", insertable = false, updatable = false)
-    private User user;
 
     @PrePersist
     protected void onCreate() {

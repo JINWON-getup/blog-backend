@@ -14,19 +14,25 @@ public interface UserRepository extends JpaRepository<User,Long> {
     // userId로 사용자 찾기 (로그인 용도)
     Optional<User> findByUserId(String userId);
 
-    // email로 사용자 찾기 (비밀번호 찾기 용도)
-    Optional<User> findByEmail(String email);
+    // email로 사용자 찾기 (비밀번호 찾기 용도) - 필드명 userEmail 기준
+    Optional<User> findByUserEmail(String userEmail);
 
     // userId 중복 체크
     boolean existsByUserId(String userId);
     
-    // 이메일 중복 체크
-    boolean existsByEmail(String email);
+    // 이메일 중복 체크 - 필드명 userEmail 기준
+    boolean existsByUserEmail(String userEmail);
 
     // 전화번호 중복 체크
     boolean existsByPhoneNumber(String phoneNumber);
 
-    // 사용자 검색 (userId, 이메일, 주소로 검색)
-    @Query("SELECT u FROM User u WHERE u.userId LIKE CONCAT('%', :keyword, '%') OR u.email LIKE CONCAT('%', :keyword, '%')")
+    // 닉네임 중복 체크
+    boolean existsByNickName(String nickName);
+
+    // 닉네임으로 사용자 찾기
+    Optional<User> findByNickName(String nickName);
+
+    // 사용자 검색 (userId로만 검색)
+    @Query("SELECT u FROM User u WHERE u.userId LIKE CONCAT('%', :keyword, '%')")
     List<User> searchUsers(@Param("keyword") String keyword);
 }
