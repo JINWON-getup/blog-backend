@@ -60,4 +60,9 @@ public class PostService {
     public List<Post> getPostsByBoardType(String boardType) {
         return postRepository.findByBoardType(boardType);
     }
+    
+    // 사용자 ID로 게시글 조회
+    public List<Post> getPostsByUserId(Long userId) {
+        return postRepository.findByUserId(userId);
+    }
 }

@@ -8,4 +8,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
     // boardType으로 게시글 필터링
     List<Post> findByBoardType(String boardType);
+    
+    // userId로 게시글 조회
+    List<Post> findByUserId(Long userId);
 }

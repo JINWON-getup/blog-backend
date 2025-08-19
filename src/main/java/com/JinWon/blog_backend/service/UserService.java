@@ -1,5 +1,7 @@
 package com.JinWon.blog_backend.service;
 
+import com.JinWon.blog_backend.entity.Comment;
+import com.JinWon.blog_backend.entity.Post;
 import com.JinWon.blog_backend.entity.User;
 import com.JinWon.blog_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,12 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private PostService postService;
+
+    @Autowired
+    private CommentService commentService;
 
     private User findUserById(Long pid) {
         return userRepository.findById(pid)
@@ -103,25 +111,16 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    // 유저 정보 수정
+    // 유저 정보 수정 (비밀번호만 변경 가능)
     public User updateUser(Long pid, User userDetails) {
         User user = userRepository.findById(pid)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. ID: " + pid));
 
-        // 전화번호 중복 체크 (자신 제외)
-        if (!user.getPhoneNumber().equals(userDetails.getPhoneNumber()) &&
-                userRepository.existsByPhoneNumber(userDetails.getPhoneNumber())) {
-            throw new RuntimeException("이미 존재하는 전화번호입니다.");
-        }
-
-        // 수정 가능한 필드만 업데이트
-        if (userDetails.getPhoneNumber() != null) {
-            user.setPhoneNumber(userDetails.getPhoneNumber());
-        }
-
-        // 비밀번호가 변경된 경우에만 암호화
+        // 비밀번호만 변경 가능
         if (userDetails.getUserPassword() != null && !userDetails.getUserPassword().isEmpty()) {
             user.setUserPassword(passwordEncoder.encode(userDetails.getUserPassword()));
+        } else {
+            throw new RuntimeException("비밀번호를 입력해주세요.");
         }
 
         return userRepository.save(user);
@@ -135,5 +134,31 @@ public class UserService {
     // 사용자 검색
     public List<User> searchUsers(String keyword) {
         return userRepository.searchUsers(keyword);
+    }
+
+    // 회원탈퇴 (비밀번호 확인 후)
+    public boolean withdrawUser(Long pid, String password) {
+        User user = findUserById(pid);
+        
+        // 비밀번호 확인
+        if (!passwordEncoder.matches(password, user.getUserPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+        
+        // 연관된 댓글 삭제
+        List<Comment> userComments = commentService.getCommentsByUserId(pid);
+        for (Comment comment : userComments) {
+            commentService.deleteComment(comment.getId());
+        }
+        
+        // 연관된 게시글 삭제
+        List<Post> userPosts = postService.getPostsByUserId(pid);
+        for (Post post : userPosts) {
+            postService.deletePost(post.getId());
+        }
+        
+        // 사용자 삭제
+        userRepository.deleteById(pid);
+        return true;
     }
 }

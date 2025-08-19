@@ -34,12 +34,6 @@ public class PostController {
         }
     }
 
-    // 테스트용 간단한 엔드포인트
-    @GetMapping("/test")
-    public ResponseEntity<String> testEndpoint() {
-        return ResponseEntity.ok("PostController 테스트 성공! API 연결됨");
-    }
-
     // 게시글 목록 조회 (보드별 필터링 가능)
     @GetMapping
     public ResponseEntity<List<Post>> getAllPosts(@RequestParam(required = false) String boardType) {

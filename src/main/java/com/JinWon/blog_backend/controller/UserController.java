@@ -138,7 +138,7 @@ public class UserController {
         }
     }
 
-    // 사용자 정보 수정
+    // 비밀번호 변경
     @PutMapping("/{pid}")
     public ResponseEntity<?> updateUser(@PathVariable Long pid, @RequestBody User userDetails) {
         try {
@@ -146,12 +146,13 @@ public class UserController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", "사용자 정보가 수정되었습니다.");
+            response.put("message", "비밀번호가 성공적으로 변경되었습니다.");
             response.put("user", Map.of(
                     "pid", updatedUser.getId(),
                     "userId", updatedUser.getUserId(),
                     "email", updatedUser.getUserEmail(),
-                    "phoneNumber", updatedUser.getPhoneNumber()
+                    "phoneNumber", updatedUser.getPhoneNumber(),
+                    "nickName", updatedUser.getNickName()
             ));
 
             return ResponseEntity.ok(response);
@@ -218,6 +219,31 @@ public class UserController {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", "사용자 목록 조회 중 오류가 발생했습니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    // 회원탈퇴
+    @PostMapping("/{pid}/withdraw")
+    public ResponseEntity<?> withdrawUser(@PathVariable Long pid, @RequestBody Map<String, String> withdrawRequest) {
+        try {
+            String password = withdrawRequest.get("password");
+            
+            if (password == null || password.isEmpty()) {
+                return ResponseEntity.badRequest().body("비밀번호를 입력해주세요.");
+            }
+
+            boolean withdrawn = userService.withdrawUser(pid, password);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "회원탈퇴가 완료되었습니다.");
+
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }

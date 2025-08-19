@@ -17,6 +17,9 @@ public class Post {
     private Long userId;
 
     @Column(nullable = false)
+    private String nickName;
+
+    @Column(nullable = false)
     private String title;
 
     @Column(columnDefinition = "TEXT")
