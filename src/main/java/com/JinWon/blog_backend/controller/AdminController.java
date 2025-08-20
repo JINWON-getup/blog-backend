@@ -39,8 +39,8 @@ public class AdminController {
             Optional<Admin> admin = adminLoginService.getAdminByAdminId(id);
             if (admin.isPresent()) {
                 Admin adminInfo = admin.get();
-                Map<String, String> adminData = new HashMap<>();
-                adminData.put("id", adminInfo.getId().toString());
+                Map<String, Object> adminData = new HashMap<>();
+                adminData.put("id", adminInfo.getId());
                 adminData.put("adminId", adminInfo.getAdminId());
                 adminData.put("adminName", adminInfo.getAdminName());
                 adminData.put("email", adminInfo.getAdminEmail());

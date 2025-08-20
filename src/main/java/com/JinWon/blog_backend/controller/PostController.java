@@ -23,14 +23,35 @@ public class PostController {
 
     // 게시글 생성
     @PostMapping
-    public Post createPost(@RequestBody Post post) {
-        if (postService != null) {
+    public ResponseEntity<?> createPost(@RequestBody Post post) {
+        try {
+            // 필수 필드 검증
+            if (post.getUserId() == null) {
+                return ResponseEntity.badRequest().body("userId는 필수입니다.");
+            }
+            if (post.getUserType() == null || post.getUserType().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("userType은 필수입니다. (USER 또는 ADMIN)");
+            }
+            if (!post.getUserType().equals("USER") && !post.getUserType().equals("ADMIN")) {
+                return ResponseEntity.badRequest().body("userType은 USER 또는 ADMIN이어야 합니다.");
+            }
+            if (post.getNickName() == null || post.getNickName().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("nickName은 필수입니다.");
+            }
+            if (post.getTitle() == null || post.getTitle().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("title은 필수입니다.");
+            }
+            if (post.getCategory() == null || post.getCategory().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("category는 필수입니다.");
+            }
+            if (post.getBoardType() == null || post.getBoardType().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("boardType은 필수입니다.");
+            }
+            
             Post result = postService.createPost(post);
-            return result;
-        } else {
-            // 임시로 Repository 직접 사용
-            Post savedPost = postRepository.save(post);
-            return savedPost;
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("게시글 생성 실패: " + e.getMessage());
         }
     }
 

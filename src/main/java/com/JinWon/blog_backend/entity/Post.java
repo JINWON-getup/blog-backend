@@ -17,6 +17,9 @@ public class Post {
     private Long userId;
 
     @Column(nullable = false)
+    private String userType;  // "USER" 또는 "ADMIN"
+
+    @Column(nullable = false)
     private String nickName;
 
     @Column(nullable = false)

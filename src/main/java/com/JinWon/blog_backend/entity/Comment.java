@@ -22,6 +22,9 @@ public class Comment {
     @Column(nullable = false)
     private Long userId;
 
+    @Column(nullable = false)
+    private String userType;  // "USER" 또는 "ADMIN"
+
     // 대댓글은 한 단계만 (원댓글 ID)
     @Column
     private Long parentCommentId;

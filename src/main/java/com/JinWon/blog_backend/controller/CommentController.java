@@ -28,12 +28,25 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<?> createComment(@RequestBody Comment comment) {
         try {
-            if (commentService != null) {
-                Comment result = commentService.createComment(comment);
-                return ResponseEntity.ok(result);
-            } else {
-                return ResponseEntity.badRequest().body("CommentService 주입 실패");
+            // 필수 필드 검증
+            if (comment.getUserId() == null) {
+                return ResponseEntity.badRequest().body("userId는 필수입니다.");
             }
+            if (comment.getUserType() == null || comment.getUserType().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("userType은 필수입니다. (USER 또는 ADMIN)");
+            }
+            if (!comment.getUserType().equals("USER") && !comment.getUserType().equals("ADMIN")) {
+                return ResponseEntity.badRequest().body("userType은 USER 또는 ADMIN이어야 합니다.");
+            }
+            if (comment.getContent() == null || comment.getContent().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("content는 필수입니다.");
+            }
+            if (comment.getPostId() == null) {
+                return ResponseEntity.badRequest().body("postId는 필수입니다.");
+            }
+            
+            Comment result = commentService.createComment(comment);
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("댓글 생성 중 오류: " + e.getMessage());
         }
