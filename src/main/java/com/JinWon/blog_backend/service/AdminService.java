@@ -18,20 +18,24 @@ public class AdminService {
     private PasswordEncoder passwordEncoder;
 
     // 관리자 로그인 검증
-    public boolean validateLogin(String id, String password) {
-        Optional<Admin> admin = adminLoginRepository.findById(id);
+    public boolean validateLogin(String adminId, String password) {
+        Optional<Admin> admin = adminLoginRepository.findByAdminId(adminId);
         if (admin.isPresent()) {
             Admin foundAdmin = admin.get();
-            // BCrypt로 비밀번호 검증
-            boolean matches = passwordEncoder.matches(password, foundAdmin.getAdminPassword());
-            return matches;
+            // 평문 비밀번호 비교 (개발 모드)
+            return password.equals(foundAdmin.getAdminPassword());
         } else {
             return false;
         }
     }
 
-    // 관리자 정보 조회
-    public Optional<Admin> getAdminById(String id) {
+    // 관리자 정보 조회 (adminId로)
+    public Optional<Admin> getAdminByAdminId(String adminId) {
+        return adminLoginRepository.findByAdminId(adminId);
+    }
+
+    // 관리자 정보 조회 (Long id로)
+    public Optional<Admin> getAdminById(Long id) {
         return adminLoginRepository.findById(id);
     }
 
@@ -41,7 +45,7 @@ public class AdminService {
     }
 
     // 비밀번호 변경 (현재 비밀번호 확인 후)
-    public boolean changePassword(String id, String currentPassword, String newPassword) {
+    public boolean changePassword(Long id, String currentPassword, String newPassword) {
         Optional<Admin> admin = adminLoginRepository.findById(id);
         if (admin.isPresent()) {
             Admin adminUser = admin.get();

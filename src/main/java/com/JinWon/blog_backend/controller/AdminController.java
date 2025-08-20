@@ -36,11 +36,12 @@ public class AdminController {
             response.put("message", "로그인 성공");
 
             // 관리자 정보 조회 (비밀번호 제외)
-            Optional<Admin> admin = adminLoginService.getAdminById(id);
+            Optional<Admin> admin = adminLoginService.getAdminByAdminId(id);
             if (admin.isPresent()) {
                 Admin adminInfo = admin.get();
                 Map<String, String> adminData = new HashMap<>();
-                adminData.put("id", adminInfo.getAdminId());
+                adminData.put("id", adminInfo.getId().toString());
+                adminData.put("adminId", adminInfo.getAdminId());
                 adminData.put("adminName", adminInfo.getAdminName());
                 adminData.put("email", adminInfo.getAdminEmail());
                 response.put("admin", adminData);
@@ -54,13 +55,14 @@ public class AdminController {
     }
 
     // 관리자 정보 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getAdminInfo(@PathVariable String id) {
-        Optional<Admin> admin = adminLoginService.getAdminById(id);
+    @GetMapping("/{adminId}")
+    public ResponseEntity<?> getAdminInfo(@PathVariable String adminId) {
+        Optional<Admin> admin = adminLoginService.getAdminByAdminId(adminId);
         if (admin.isPresent()) {
             Admin adminInfo = admin.get();
-            Map<String, String> adminData = new HashMap<>();
-            adminData.put("id", adminInfo.getAdminId());
+            Map<String, Object> adminData = new HashMap<>();
+            adminData.put("id", adminInfo.getId());
+            adminData.put("adminId", adminInfo.getAdminId());
             adminData.put("adminName", adminInfo.getAdminName());
             adminData.put("email", adminInfo.getAdminEmail());
             return ResponseEntity.ok(adminData);
@@ -79,12 +81,12 @@ public class AdminController {
     }
 
     // 관리자 정보 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateAdmin(@PathVariable String id, @RequestBody Map<String, String> updateRequest) {
+    @PutMapping("/{adminId}")
+    public ResponseEntity<?> updateAdmin(@PathVariable String adminId, @RequestBody Map<String, String> updateRequest) {
         try {
 
             // 현재 로그인된 사용자 확인 (보안)
-            Optional<Admin> existingAdmin = adminLoginService.getAdminById(id);
+            Optional<Admin> existingAdmin = adminLoginService.getAdminByAdminId(adminId);
             if (!existingAdmin.isPresent()) {
                 return ResponseEntity.status(404).body("관리자를 찾을 수 없습니다.");
             }
@@ -106,7 +108,8 @@ public class AdminController {
             response.put("success", true);
             response.put("message", "관리자 정보 수정 성공");
             response.put("admin", Map.of(
-                    "id", updatedAdmin.getAdminId(),
+                    "id", updatedAdmin.getId(),
+                    "adminId", updatedAdmin.getAdminId(),
                     "adminName", updatedAdmin.getAdminName(),
                     "email", updatedAdmin.getAdminEmail()
             ));
