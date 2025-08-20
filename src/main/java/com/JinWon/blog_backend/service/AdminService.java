@@ -40,7 +40,7 @@ public class AdminService {
         return adminLoginRepository.save(admin);
     }
 
-    // 비밀번호 변경
+    // 비밀번호 변경 (현재 비밀번호 확인 후)
     public boolean changePassword(String id, String currentPassword, String newPassword) {
         Optional<Admin> admin = adminLoginRepository.findById(id);
         if (admin.isPresent()) {
@@ -55,23 +55,6 @@ public class AdminService {
                 adminLoginRepository.save(adminUser);
                 return true;
             }
-        }
-
-        return false;
-    }
-
-    // 강제로 비밀번호 변경
-    public boolean changePasswordWithoutCurrent(String id, String newPassword) {
-        Optional<Admin> admin = adminLoginRepository.findById(id);
-        if (admin.isPresent()) {
-            Admin adminUser = admin.get();
-
-            // 새 비밀번호를 BCrypt로 인코딩
-            String encodedNewPassword = passwordEncoder.encode(newPassword);
-            adminUser.setAdminPassword(encodedNewPassword);
-
-            adminLoginRepository.save(adminUser);
-            return true;
         }
         return false;
     }

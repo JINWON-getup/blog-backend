@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admin")
-// @CrossOrigin(origins = "*")
+
 public class AdminController {
 
     @Autowired
@@ -116,69 +116,6 @@ public class AdminController {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", "관리자 정보 수정 실패: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-    // 비밀번호 변경
-    @PutMapping("/{id}/password")
-    public ResponseEntity<?> changePassword(@PathVariable String id, @RequestBody Map<String, String> passwordRequest) {
-        try {
-            String currentPassword = passwordRequest.get("currentPassword");
-            String newPassword = passwordRequest.get("newPassword");
-
-            if (currentPassword == null || newPassword == null) {
-                return ResponseEntity.badRequest().body("현재 비밀번호와 새 비밀번호를 입력해주세요.");
-            }
-
-            boolean passwordChanged = adminLoginService.changePassword(id, currentPassword, newPassword);
-
-            if (passwordChanged) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", true);
-                response.put("message", "비밀번호 변경 성공");
-                return ResponseEntity.ok(response);
-            } else {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "현재 비밀번호가 올바르지 않습니다.");
-                return ResponseEntity.badRequest().body(response);
-            }
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "비밀번호 변경 실패: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-    // 현재 비밀번호 확인 없이 새 비밀번호로 변경
-    @PutMapping("/{id}/reset-password")
-    public ResponseEntity<?> resetPassword(@PathVariable String id, @RequestBody Map<String, String> request) {
-        try {
-            String newPassword = request.get("newPassword");
-
-            if (newPassword == null) {
-                return ResponseEntity.badRequest().body("새 비밀번호를 입력해주세요.");
-            }
-
-            boolean success = adminLoginService.changePasswordWithoutCurrent(id, newPassword);
-
-            if (success) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", true);
-                response.put("message", "비밀번호가 성공적으로 변경되었습니다.");
-                return ResponseEntity.ok(response);
-            } else {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "비밀번호 변경에 실패했습니다.");
-                return ResponseEntity.badRequest().body(response);
-            }
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "비밀번호 변경 실패: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
