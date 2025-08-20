@@ -17,6 +17,13 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    // 모든 댓글 조회
+    @GetMapping
+    public ResponseEntity<List<Comment>> getAllComments() {
+        List<Comment> comments = commentService.getAllComments();
+        return ResponseEntity.ok(comments);
+    }
+
     // 댓글 생성
     @PostMapping
     public ResponseEntity<?> createComment(@RequestBody Comment comment) {

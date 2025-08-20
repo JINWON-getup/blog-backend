@@ -58,4 +58,9 @@ public class CommentService {
     public Long getCommentCountByPostId(Long postId) {
         return commentRepository.countByPostId(postId);
     }
+    
+    // 모든 댓글 조회
+    public List<Comment> getAllComments() {
+        return commentRepository.findAll();
+    }
 }
